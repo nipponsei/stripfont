@@ -60,7 +60,7 @@ Here are a few examples using the following fonts:
 
 > **Note: The resulting file size could be smaller, but in my case I decided to keep all OpenType layout features.**
 
-|Font file|Originial file sizesize|Total # of glyphs|# of glyphs used|Stripped file size|
+|Font file|Originial file size|Total # of glyphs|# of glyphs used|Stripped file size|
 |:---|---:|---:|---:|---:|
 |DFHanziPenStdN-W5.otf|6.64 MB|8310|120|102 KB|
 |FOT-MatisseHatsuhiPro-B.otf|9.4 MB|9804|132|310 KB|
