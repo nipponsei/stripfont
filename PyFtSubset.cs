@@ -32,6 +32,7 @@ public class PyFtSubset {
     // each character is formatted like this: U+xxxx. ex: A -> 65(dec) -> 41(hex) -> U+0041
     return new string[] {
       $"{_fontFile}",
+      "--name-IDs=*",
       "--flavor=woff2",
       "--layout-features=*",
       $"--output-file={_randomFileName}.woff2",
