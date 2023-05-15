@@ -1,24 +1,15 @@
 using SixLabors.Fonts;
 
 public class PyFtSubset {
-  
+
   private readonly FileInfo _assFile;
   private readonly FileInfo _fontFile;
-  private string _randomFileName = string.Empty;
   private string _text = string.Empty;
 
   public PyFtSubset(FileInfo assFile, FileInfo fontFile) {
     _assFile = assFile;
     _fontFile = fontFile;
-    var randomFileName = GetRandomFileName();
-    _randomFileName = $"{randomFileName}";
     _text = new AssParser(_assFile, GetFontName(_fontFile)).GetUniqueCharacters();
-  }
-
-  private static string GetRandomFileName() {
-    // return a randomely generated file name on 8 characters, minus the extension
-    var rnd = Path.GetRandomFileName().ToUpper();
-    return rnd[..rnd.LastIndexOf('.')];
   }
 
   // a bit more of work than control chars, but still useful
@@ -35,9 +26,7 @@ public class PyFtSubset {
 
   public string WhiteSpacesChars => GetWhiteSpaceChars();
 
-  public string RandomFileName {
-    get { return _randomFileName; }
-  }
+  public string OutputFileName => Path.Join(_fontFile.DirectoryName, string.Format("{0}-subset.{1}", _fontFile.Name, _fontFile.Extension));
 
   public string[] BuildArguments() {
     // --name-IDs: set as * to keep the original font informations 'Family, Style, Type, etc.)
@@ -47,25 +36,11 @@ public class PyFtSubset {
     return new string[] {
       $"{_fontFile}",
       "--name-IDs=*",
-      "--flavor=woff2",
       "--layout-features=*",
-      $"--output-file={_randomFileName}.woff2",
+      $"--output-file={OutputFileName}",
       $"--text={_text}",
       $"--unicodes={string.Join(',', ControlChars, WhiteSpacesChars)}"
     }; 
-  }
-
-  public string[] BuildPythonArguments() {
-    return new string[] {
-      "-c",
-      $"\"from fontTools.ttLib import woff2; import brotli; woff2.decompress('{_randomFileName}.woff2', '{_randomFileName}.ttf')\""
-    };
-  }
-
-  public void DeleteTempFontFile() {
-    var fontDirectory = new DirectoryInfo(_fontFile.Directory!.FullName);
-    var woffFiles = fontDirectory.EnumerateFiles("*.woff2").ToList();
-    woffFiles.ForEach(f => f.Delete());
   }
 
   public static bool IsValidFontFile(FileInfo? fontFile) {

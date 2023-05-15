@@ -1,7 +1,9 @@
 using CliWrap;
 using CliWrap.Buffered;
+using SixLabors.Fonts;
 using System.CommandLine;
 using System.CommandLine.Parsing;
+using static System.Net.Mime.MediaTypeNames;
 
 // setup command line options
 Option<FileInfo> assFileOption = new Option<FileInfo>("--ass-file", description: "The ASS scritp file to analyze.").ExistingOnly();
@@ -29,33 +31,20 @@ return await cmd.InvokeAsync(args);
 
 // main method
 static async Task<int> CheckAssFileAsync(FileInfo assFile, FileInfo fontFile) {
-	try {
+  try {
     // create the temporary subset woff2 font
     var pyftSubset = new PyFtSubset(assFile, fontFile);
     var pyftResult = await Cli.Wrap("pyftsubset")
       .WithWorkingDirectory(fontFile.Directory!.FullName)
       .WithArguments(pyftSubset.BuildArguments())
       .ExecuteBufferedAsync();
-    if (pyftResult.ExitCode != 0) {
-      Console.WriteLine(pyftResult.StandardError);
+    if (pyftResult.ExitCode == 0) {
+      Console.WriteLine("Font file successfully created.");
+      return 0;
     }
-
-    // decompress woff2 into a ttf font file
-    var s = pyftSubset.BuildPythonArguments();
-    var pythonResult = await Cli.Wrap("python")
-      .WithWorkingDirectory(fontFile.Directory!.FullName)
-      .WithArguments(pyftSubset.BuildPythonArguments(), false) // set to false to NOT escape the double quote!
-      .ExecuteBufferedAsync();
-    if (pythonResult.ExitCode == 0) {
-      Console.WriteLine($"OpenType font {pyftSubset.RandomFileName}.ttf successfully created.");
-    } else {
-      Console.WriteLine(pythonResult.StandardError);
-    }
-    pyftSubset.DeleteTempFontFile();
-
-    return 0;
-	} catch (Exception ex) {
+    return 1;
+  } catch (Exception ex) {
     Console.WriteLine($"stripfont failed with the following error: {ex.Message}");
     return 1;
-	}
+  }
 }
