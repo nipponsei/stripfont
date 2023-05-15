@@ -16,7 +16,6 @@ You're gonna need the following:
 - dotnet 6. Can be downloaded from [here](https://dotnet.microsoft.com/en-us/download)
 - Python3. Download link [here](https://www.python.org/downloads/)
 - fontTools : `python3 -m pip install fonttools`
-- brotli : `python3 -m pip install brotli`
 
 
 **Install stripfont:**  
@@ -44,12 +43,12 @@ It takes two parameters:
 - `--font-file`: full path of the font file we want to strip 
 - `--ass-file`: full path of an ASS file as a source to detect the characters we want to keep
 
-If everything goes right, the newly created font will be available in the directory of the source font file, with a randomly generated file name like `XB0CGDCB.ttf`.
+If everything goes right, the newly created font will be available in the directory of the source font file, its name being suffixed with `-subset`.
 
 **Example:**
 ```bash
 yuki.n@chiba$ ./stripfont --ass-file ~/_github/_wip/niehime/subs/NCOP1/NCOP1.ass --font-file ~/_github/_wip/niehime/fonts/DFHanziPenStdN-W5.otf 
-OpenType font OSIOXC0X.ttf successfully created.
+Font file successfully created.
 yuki.n@chiba$
 ```
 
@@ -63,13 +62,12 @@ Here are a few examples using the following fonts:
 
 |Font file|Originial file sizesize|Total # of glyphs|# of glyphs used|Stripped file size|
 |:---|---:|---:|---:|---:|
-|DFHanziPenStdN-W5.otf|6.64 MB|8310|117|102 KB|
-|FOT-MatisseHatsuhiPro-B.otf|9.4 MB|9804|98|310 KB|
-|A-OTF-SuzumushiStd-Medium.otf|3.77M|8207|17|14.1 KB|
+|DFHanziPenStdN-W5.otf|6.64 MB|8310|120|102 KB|
+|FOT-MatisseHatsuhiPro-B.otf|9.4 MB|9804|132|310 KB|
+|A-OTF-SuzumushiStd-Medium.otf|3.77M|8207|52|14.7 KB|
 
 For a more visual comparison, you can check [this page](sample/previews.md).
 
 ## What's next?
-- Because I needed this tool like yesterday, I didn't bother to package it ~~properly~~ at all. That's on my TODO list.
-- If you properly examine the original and generated fonts, you'll notice there might be some differences in the metadatas (especially Family and Style). I probably missed a parameter when using fonTools. For now, it works, but I'll have a look at that.
+- Because I needed this tool like yesterday, I didn't bother to package it ~~properly~~ at all.That's on my [TODO list](https://github.com/nipponsei/stripfont/issues/2).
 - I didn't check (yet) if there's a good ASS parser in dotnet out there. Maybe I'll give it a go.
