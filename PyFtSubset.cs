@@ -28,11 +28,13 @@ public class PyFtSubset {
 
   public string OutputFileName => Path.Join(_fontFile.DirectoryName, string.Format("{0}-subset.{1}", _fontFile.Name, _fontFile.Extension));
 
+  public bool IsFontInUse => !string.IsNullOrWhiteSpace(_text);
+
   public string[] BuildArguments() {
     // --name-IDs: set as * to keep the original font informations 'Family, Style, Type, etc.)
-    // --flavor: format of the output file. Here we use woff2
     // --layout-features: * because we want to keep all OpenType features in our font
     // --text: list of characters to keep from the original text.
+    // --unicode: list of additional unicode characters. We focus on 'non visible chars' here : whitespaces & control chars
     return new string[] {
       $"{_fontFile}",
       "--name-IDs=*",
@@ -45,10 +47,9 @@ public class PyFtSubset {
 
   public static bool IsValidFontFile(FileInfo? fontFile) {
     try {
-      var fonts = new FontCollection();
       if (fontFile == null) throw new ArgumentNullException(nameof(fontFile));
-      // just read the info from the font file. If it returns something then it's a valid font
-      var fontFamily = fonts.Add(fontFile.FullName);
+      // just read the info from the font file. If the call doesn't fail then it's a valid font
+      _ = new FontCollection().Add(fontFile.FullName);
       return true;
     } catch {
       return false;

@@ -32,14 +32,23 @@ return await cmd.InvokeAsync(args);
 // main method
 static async Task<int> CheckAssFileAsync(FileInfo assFile, FileInfo fontFile) {
   try {
-    // create the temporary subset woff2 font
+    // get the informations we need from the ASS file regarding the font
     var pyftSubset = new PyFtSubset(assFile, fontFile);
+
+    //
+    if (!pyftSubset.IsFontInUse) {
+      // that's not the font you're looking for. Move along!
+      Console.WriteLine($"Font '{fontFile.GetDisplayName()}' is not used in the ASS file. No subset will be generated.");
+      return 0;
+    }
+
+    // let's go
     var pyftResult = await Cli.Wrap("pyftsubset")
       .WithWorkingDirectory(fontFile.Directory!.FullName)
       .WithArguments(pyftSubset.BuildArguments())
       .ExecuteBufferedAsync();
     if (pyftResult.ExitCode == 0) {
-      Console.WriteLine("Font file successfully created.");
+      Console.WriteLine($"Subset of font '{fontFile.GetDisplayName()}' successfully created.");
       return 0;
     }
     return 1;
