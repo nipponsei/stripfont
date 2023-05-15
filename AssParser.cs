@@ -30,6 +30,26 @@ public class AssParser {
 		}
   }
   
+  public string GetUniqueCharacters() {
+    // a lot of cleanup to do!
+    // get all dialogue lines with a corresponding style (i.e.: a style that references the font). Assuming a styled line won't override the \fn tag
+    List<string> lines = new List<string>(GetStyledDialogueLines());
+    // and non styled line where the font is used by name (i.e.: using the \fn tag)
+    lines.AddRange(GetMatchingFnTagDialogueLines(lines));
+    // strip all tags from those lines so we can focus on the text
+    var dialogues = DeleteDialogueTags(lines);
+
+    // finally, we can focus on characters occurences
+    var uniqueChars = GetUniqueCharacters(dialogues);
+    if (uniqueChars != null) {
+      return new string(uniqueChars.ToArray());
+    } else {
+      return string.Empty;
+    }
+  }
+
+  //TODO: leave this as a comment for now. We'll clean up later.
+  /*
   public string? GetUniqueCharactersSequence() {
     // a lot of cleanup to do!
     // get all dialogue lines with a corresponding style (i.e.: a style that references the font). Assuming a styled line won't override the \fn tag
@@ -50,6 +70,7 @@ public class AssParser {
       return string.Empty;
     }
   }
+  */
 
   private IEnumerable<string> GetStyledDialogueLines() {
     // get all lines that start with 'Style' and contains the exact name of the font.

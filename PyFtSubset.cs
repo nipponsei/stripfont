@@ -5,6 +5,7 @@ public class PyFtSubset {
   private readonly FileInfo _assFile;
   private readonly FileInfo _fontFile;
   private string _randomFileName = string.Empty;
+  private string _text = string.Empty;
   private string? _unicodes;
 
   public PyFtSubset(FileInfo assFile, FileInfo fontFile) {
@@ -12,7 +13,7 @@ public class PyFtSubset {
     _fontFile = fontFile;
     var randomFileName = GetRandomFileName();
     _randomFileName = $"{randomFileName}";
-    _unicodes = new AssParser(_assFile, GetFontName(_fontFile)).GetUniqueCharactersSequence();
+    _text = new AssParser(_assFile, GetFontName(_fontFile)).GetUniqueCharacters();
   }
 
   private static string GetRandomFileName() {
@@ -26,8 +27,10 @@ public class PyFtSubset {
   }
 
   public string[] BuildArguments() {
+    // --name-IDs: set as * to keep the original font informations 'Family, Style, Type, etc.)
     // --flavor: format of the output file. Here we use woff2
     // --layout-features: * because we want to keep all OpenType features in our font
+    // --text: list of characters to keep from the original text.
     // --unicodes: comma-separated list of the characters we want in our font.
     // each character is formatted like this: U+xxxx. ex: A -> 65(dec) -> 41(hex) -> U+0041
     return new string[] {
@@ -36,6 +39,7 @@ public class PyFtSubset {
       "--flavor=woff2",
       "--layout-features=*",
       $"--output-file={_randomFileName}.woff2",
+      $"--text={_text}",
       $"--unicodes={_unicodes}"
     }; 
   }
