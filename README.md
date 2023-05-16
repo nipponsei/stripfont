@@ -20,12 +20,18 @@ You're gonna need the following:
 
 **Install stripfont:**  
 You can install it by cloning this repo and running `dotnet build` at the root of the **stripfont** folder.  
-The binary file (*./stripfont* on Linux or *stripfont.exe* on Windows) will be available in the **bin/debug/net6.0** folder.
+The binary file (**./stripfont** on Linux or **stripfont.exe** on Windows) will be available in the **bin/Debug/net6.0** folder.
+
+```cmd
+git clone https://github.com/nipponsei/stripfont.git
+cd stripfont
+dotnet build
+```
 
 
 ## How to run
 ```cmd
-YUKI.N>stripfont -h
+stripfont -h
 Description:
   Strip unwanted glyphs from a font file based on the usage of the font in a ASS subtitle file.
 
@@ -47,9 +53,8 @@ If everything goes right, the newly created font will be available in the direct
 
 **Example:**
 ```bash
-yuki.n@chiba$ ./stripfont --ass-file ~/_github/_wip/niehime/subs/NCOP1/NCOP1.ass --font-file ~/_github/_wip/niehime/fonts/DFHanziPenStdN-W5.otf 
-Font file successfully created.
-yuki.n@chiba$
+./stripfont --ass-file ~/_github/_wip/niehime/subs/NCOP1/NCOP1.ass --font-file ~/_github/_wip/niehime/fonts/DFHanziPenStdN-W5.otf 
+Subset of font 'DFHanziPen StdN W5' successfully created.
 ```
 
 ## Some comparisons
@@ -58,7 +63,7 @@ Here are a few examples using the following fonts:
 - Fontworks [FOT-マティスはつひやまとPro B](https://fontworks.co.jp/fontsearch/matissehatsuhipro-b/)
 - Morisawa [A-OTF すずむし Std M](https://www.morisawa.co.jp/fonts/specimen/1212)
 
-> **Note: The resulting file size could be smaller, but in my case I decided to keep all OpenType layout features.**
+> **Note:** The resulting file size could be smaller, but in my case I decided to keep all OpenType layout features.
 
 |Font file|Originial file size|Total # of glyphs|# of glyphs used|Stripped file size|
 |:---|---:|---:|---:|---:|
